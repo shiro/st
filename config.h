@@ -5,9 +5,9 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "mono:pixelsize=16:antialias=true:autohint=true";
-static char *font2[] = { "Inconsolata for Powerline:pixelsize=16:antialias=true:autohint=true" };
-static int borderpx = 2;
+static char *font = "Hack Nerd Font Mono:size=10:antialias=true";
+static char *font2[] = { "Hack Nerd Font Mono:style=Bold:size=10:antialias=true" };
+static int borderpx = 20;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -194,8 +194,8 @@ ResourcePref resources[] = {
  */
 static MouseShortcut mshortcuts[] = {
 	/* button               mask            string */
-	{ Button4,              XK_NO_MOD,      "\031" },
-	{ Button5,              XK_NO_MOD,      "\005" },
+//	{ Button4,              XK_NO_MOD,      "\031" },
+//	{ Button5,              XK_NO_MOD,      "\005" },
 };
 
 /* Internal keyboard shortcuts. */
@@ -203,6 +203,8 @@ static MouseShortcut mshortcuts[] = {
 #define TERMMOD (Mod1Mask|ShiftMask)
 
 MouseKey mkeys[] = {
+	{ Button4,              XK_NO_MOD,      kscrollup,      {.i =  1} },
+	{ Button5,              XK_NO_MOD,      kscrolldown,    {.i =  1} },
 	/* button               mask            function        argument */
 	{ Button4,              ShiftMask,      kscrollup,      {.i =  1} },
 	{ Button5,              ShiftMask,      kscrolldown,    {.i =  1} },
@@ -517,6 +519,7 @@ static Key key[] = {
 	{ XK_F33,           XK_NO_MOD,      "\033[20;5~",    0,    0},
 	{ XK_F34,           XK_NO_MOD,      "\033[21;5~",    0,    0},
 	{ XK_F35,           XK_NO_MOD,      "\033[23;5~",    0,    0},
+	{ ShiftMask,        XK_Insert,      selpaste,       0, 0 },
 };
 
 /*
