@@ -766,6 +766,19 @@ xloadcolor(int i, const char *name, Color *ncolor)
 }
 
 void
+applyalphatocolor(int colindex, float alpha){
+	dc.col[colindex].color.alpha = (unsigned short)(0xffff * alpha);
+	dc.col[colindex].color.red =
+		((unsigned short)(dc.col[colindex].color.red * alpha)) & 0xff00;
+	dc.col[colindex].color.green =
+		((unsigned short)(dc.col[colindex].color.green * alpha)) & 0xff00;
+	dc.col[colindex].color.blue =
+		((unsigned short)(dc.col[colindex].color.blue * alpha)) & 0xff00;
+	dc.col[colindex].pixel &= 0x00FFFFFF;
+	dc.col[colindex].pixel |= (unsigned char)(0xff * alpha) << 24;
+}
+
+void
 xloadcols(void)
 {
 	int i;
@@ -791,17 +804,12 @@ xloadcols(void)
 	/* set alpha value of bg color */
 	if (opt_alpha)
 		alpha = strtof(opt_alpha, NULL);
-	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
-	dc.col[defaultbg].color.red =
-		((unsigned short)(dc.col[defaultbg].color.red * alpha)) & 0xff00;
-	dc.col[defaultbg].color.green =
-		((unsigned short)(dc.col[defaultbg].color.green * alpha)) & 0xff00;
-	dc.col[defaultbg].color.blue =
-		((unsigned short)(dc.col[defaultbg].color.blue * alpha)) & 0xff00;
-	dc.col[defaultbg].pixel &= 0x00FFFFFF;
-	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
+
+  applyalphatocolor(defaultbg, alpha);
+
 	loaded = 1;
 }
+
 
 int
 xsetcolorname(int x, const char *name)
@@ -816,6 +824,11 @@ xsetcolorname(int x, const char *name)
 
 	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
 	dc.col[x] = ncolor;
+
+  // set background alpha on color scheme update
+  if (x == defaultbg){
+    applyalphatocolor(defaultbg, alpha);
+  }
 
 	return 0;
 }
